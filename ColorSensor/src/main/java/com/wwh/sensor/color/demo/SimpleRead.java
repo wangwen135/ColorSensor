@@ -1,17 +1,17 @@
 package com.wwh.sensor.color.demo;
 
+import gnu.io.CommPortIdentifier;
+import gnu.io.PortInUseException;
+import gnu.io.SerialPort;
+import gnu.io.SerialPortEvent;
+import gnu.io.SerialPortEventListener;
+import gnu.io.UnsupportedCommOperationException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.TooManyListenersException;
-
-import javax.comm.CommPortIdentifier;
-import javax.comm.PortInUseException;
-import javax.comm.SerialPort;
-import javax.comm.SerialPortEvent;
-import javax.comm.SerialPortEventListener;
-import javax.comm.UnsupportedCommOperationException;
 
 public class SimpleRead implements Runnable, SerialPortEventListener {
 
@@ -37,7 +37,7 @@ public class SimpleRead implements Runnable, SerialPortEventListener {
 
             if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 
-                if (portId.getName().equals("COM4")) {
+                if (portId.getName().equals("COM1")) {
 
                     SimpleRead reader = new SimpleRead();
 

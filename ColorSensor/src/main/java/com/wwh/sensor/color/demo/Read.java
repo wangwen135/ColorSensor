@@ -1,131 +1,111 @@
 package com.wwh.sensor.color.demo;
 
+import gnu.io.CommPortIdentifier;
+import gnu.io.NoSuchPortException;
+import gnu.io.PortInUseException;
+import gnu.io.SerialPort;
+import gnu.io.UnsupportedCommOperationException;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.comm.CommPortIdentifier;
-import javax.comm.NoSuchPortException;
-import javax.comm.PortInUseException;
-import javax.comm.SerialPort;
-import javax.comm.UnsupportedCommOperationException;
 import javax.sql.rowset.serial.SerialException;
 
 public class Read {
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
 
-        CommPortIdentifier portId = null;
+		CommPortIdentifier portId = null;
 
-        try {
+		try {
 
-            portId = CommPortIdentifier.getPortIdentifier("COM4");
+			portId = CommPortIdentifier.getPortIdentifier("COM1");
 
-        } catch (NoSuchPortException e1) {
+		} catch (NoSuchPortException e1) {
 
-            System.out.println("串口不存在！");
+			System.out.println("串口不存在！");
 
-            e1.printStackTrace();
+			e1.printStackTrace();
 
-        }
+			return;
+		}
+		try {
+			SerialPort sPort = (SerialPort) portId.open("串口读取程序", 60);
+			try {
+				// 波特率9600bps,8位数据位,1停止位 ,偶校验
 
-        try {
+				sPort.setSerialPortParams(9600, SerialPort.DATABITS_7,
+						SerialPort.STOPBITS_1, SerialPort.PARITY_EVEN);
+			} catch (UnsupportedCommOperationException e) {
+				e.printStackTrace();
+			}
 
-            SerialPort sPort = (SerialPort) portId.open("串口读取程序", 60);
+			// 用于对串口写数据
 
-            try {
+			// 用于从串口读数据
 
-                sPort.setSerialPortParams(9600, SerialPort.DATABITS_7, SerialPort.STOPBITS_1, SerialPort.PARITY_EVEN);
+			InputStream is = null;
 
-            }
+			try {
 
-            // 波特率9600bps,7位数据位,1停止位 ,偶校验
+				is = new BufferedInputStream(sPort.getInputStream());
 
-            catch (UnsupportedCommOperationException e) {
-            }
+			} catch (IOException e) {
 
-            // 用于对串口写数据
+				System.out.println("读取串口失败！");
 
-            // 用于从串口读数据
+				e.printStackTrace();
+				return;
+			}
 
-            InputStream is = null;
+			int PacketLength = 40;// PacketLength为缓冲数组长度
 
-            try {
+			int newData;
 
-                is = new BufferedInputStream(sPort.getInputStream());
+			while (true) {
 
-            } catch (IOException e) {
+				char[] msgPack = new char[PacketLength];
 
-                System.out.println("读取串口失败！");
+				for (int i = 0; i < PacketLength; i++) {
 
-                e.printStackTrace();
+					try {
 
-            }
+						if ((newData = is.read()) != -1) {
 
-            int PacketLength = 40;// PacketLength为缓冲数组长度
+							if (newData == 10)
 
-            int newData;
+								break;
 
-            while (true) {
+							msgPack[i] = (char) newData;
 
-                char[] msgPack = new char[PacketLength];
+							System.out.println(msgPack[i]);
 
-                for (int i = 0; i < PacketLength; i++) {
+						}
 
-                    try {
+					} catch (IOException e) {
 
-                        if ((newData = is.read()) != -1) {
+						// TODO Auto-generated catch block
 
-                            if (newData == 10)
+						e.printStackTrace();
 
-                                break;
+					}
+				}
 
-                            msgPack[i] = (char) newData;
+				String string = String.valueOf(msgPack).trim();
 
-                            System.out.println(msgPack[i]);
+				String[] dataArray = string.split(",");
 
-                        }
+				for (int i = 0; i < dataArray.length; i++)
 
-                    } catch (IOException e) {
+				{
+					System.out.print(i + ":" + dataArray[i] + "\n");
+				}
+			}
 
-                        // TODO Auto-generated catch block
-
-                        e.printStackTrace();
-
-                    }
-
-                }
-
-                String string = String.valueOf(msgPack).trim();
-
-                String[] dataArray = string.split(",");
-
-                for (int i = 0; i < dataArray.length; i++)
-
-                {
-
-                    System.out.print(i + ":" + dataArray[i] + "n");
-
-                }
-
-            }
-
-        } catch (PortInUseException e) {
-
-            try {
-
-                throw new SerialException(e.getMessage());
-
-            } catch (SerialException e1) {
-
-                System.out.println("串口被占用！");
-
-                e1.printStackTrace();
-
-            }
-
-        }
-
-    }
-
+		} catch (PortInUseException e) {
+			System.out.println("串口被占用！");
+			e.printStackTrace();
+		}
+	}
 }
