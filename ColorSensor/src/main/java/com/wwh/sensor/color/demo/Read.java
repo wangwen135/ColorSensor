@@ -20,7 +20,7 @@ public class Read {
 
 		try {
 
-			portId = CommPortIdentifier.getPortIdentifier("COM1");
+			portId = CommPortIdentifier.getPortIdentifier("COM6");
 
 		} catch (NoSuchPortException e1) {
 
@@ -84,9 +84,6 @@ public class Read {
 						}
 
 					} catch (IOException e) {
-
-						// TODO Auto-generated catch block
-
 						e.printStackTrace();
 
 					}
