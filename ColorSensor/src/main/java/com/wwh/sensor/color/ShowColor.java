@@ -36,10 +36,13 @@ import javax.swing.border.TitledBorder;
 
 import com.wwh.sensor.serial.SerialDataReceiveHandler;
 import com.wwh.sensor.serial.SerialReadAndWriteHandler;
+import javax.swing.JCheckBox;
+
+import sun.io.CharToByteKOI8_R;
 
 /**
  * <pre>
- * 
+ * 读取并显示颜色
  * </pre>
  *
  * @author wwh
@@ -54,9 +57,8 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txt_send;
-
+	private JPanel panel_color;
 	private JTextArea txta_console;
-
 	private JComboBox<String> cmb_serialPort;
 
 	private SerialReadAndWriteHandler sRWHandler;
@@ -242,10 +244,10 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
 		button_1.setBounds(10, 65, 93, 23);
 		panel_center.add(button_1);
 
-		JPanel panel = new JPanel();
-		panel.setBackground(Color.BLACK);
-		panel.setBounds(10, 98, 173, 119);
-		panel_center.add(panel);
+		panel_color = new JPanel();
+		panel_color.setBackground(Color.BLACK);
+		panel_color.setBounds(10, 98, 173, 119);
+		panel_center.add(panel_color);
 
 		JButton btnTest = new JButton("test");
 		btnTest.addActionListener(new ActionListener() {
@@ -324,7 +326,7 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
 			return;
 		}
 		txta_console.setText("");
-		if(sRWHandler!=null){
+		if (sRWHandler != null) {
 			sRWHandler.close();
 		}
 		try {
@@ -345,7 +347,11 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
 	private void send() {
 		if (sRWHandler != null) {
 			try {
-				sRWHandler.writeData(txt_send.getText());
+				String data = txt_send.getText();
+				sRWHandler.writeData(data.getBytes());
+
+				// 清空
+				txt_send.setText("");
 			} catch (IOException e) {
 				e.printStackTrace();
 				JOptionPane.showMessageDialog(this, "数据发送失败", "错误",
@@ -361,6 +367,21 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
 		// 显示串口返回的数据
 		txta_console.append(data);
 		txta_console.setSelectionEnd(txta_console.getText().length());
+
+		// 每次只返回部分数据
+		
+
+		// 判断读到的数据是否为颜色
+		// the color : 92 , 57 , 58
+		if (data.startsWith("the color : ")) {
+			data = data.substring(data.indexOf(":") + 1);
+			String[] color = data.split(",", 3);
+			int r = Integer.parseInt(color[0].trim());
+			int g = Integer.parseInt(color[1].trim());
+			int b = Integer.parseInt(color[2].trim());
+			panel_color.setBackground(new Color(r, g, b));
+		}
+
 	}
 
 }

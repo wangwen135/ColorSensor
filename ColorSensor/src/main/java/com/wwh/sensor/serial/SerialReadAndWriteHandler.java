@@ -58,32 +58,33 @@ public class SerialReadAndWriteHandler implements SerialPortEventListener {
 
 		serialPort.notifyOnDataAvailable(true);
 
-		// 配置串口
+		// 配置串口---默认
 		serialPort.setSerialPortParams(9600,// 波特率9600bps
-				SerialPort.DATABITS_7,// 7位数据位
-				SerialPort.STOPBITS_1,// 1位停止位
-				SerialPort.PARITY_EVEN);// 偶校验
+				SerialPort.DATABITS_8,// 数据位8
+				SerialPort.STOPBITS_1,// 停止位1
+				SerialPort.PARITY_NONE);// 校验位无
 
 	}
 
 	/**
 	 * <pre>
-	 *关闭
+	 * 关闭
 	 * </pre>
 	 */
 	public void close() {
 		serialPort.close();
 	}
-	
+
 	/**
 	 * <pre>
-	 *写数据
+	 * 写数据
 	 * </pre>
-	 * @param data
+	 * 
+	 * @param bytes
 	 * @throws IOException
 	 */
-	public void writeData(String data) throws IOException {
-		outputStream.write(data.getBytes());
+	public void writeData(byte[] bytes) throws IOException {
+		outputStream.write(bytes);
 	}
 
 	@Override
