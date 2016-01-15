@@ -146,7 +146,46 @@ void readColor() {
     if (i < 2)
       Serial.print(" , ");
   }
+  Serial.println("");
 }
+
+/**
+   获取红色
+*/
+void getRed() {
+  int v = readFrequecy(0);
+  readFrequecy(3);
+  int red = int(v * g_SF[0]);
+  Serial.print("the color : ");
+  Serial.print(red > 255 ? 255 : red);
+  Serial.println(" , 0 , 0");
+}
+
+/**
+   获取绿色
+*/
+void getGreen() {
+  int v = readFrequecy(1);
+  readFrequecy(3);
+  int green = int(v * g_SF[1]);
+  Serial.print("the color : 0 , ");
+  Serial.print(green > 255 ? 255 : green);
+  Serial.println(" , 0");
+}
+
+/**
+   获取蓝色
+*/
+void getBlue() {
+  int v = readFrequecy(2);
+  readFrequecy(3);
+  int blue = int(v * g_SF[2]);
+  Serial.print("the color : 0 , 0 , ");
+  Serial.print(blue > 255 ? 255 : blue);
+  Serial.println("");
+}
+
+void( *resetFunc) (void) = 0;
 
 void setup()
 {
@@ -178,6 +217,18 @@ void loop()
       case 1:
         //读取颜色
         readColor();
+        break;
+      case 2:
+        //只取红色
+        getRed();
+        break;
+      case 3:
+        //只取绿色
+        getGreen();
+        break;
+      case 4:
+        //只取蓝色
+        getBlue();
         break;
       case 11://关灯
         Serial.println("led low");
