@@ -92,6 +92,20 @@ public class SerialReadAndWriteHandler implements SerialPortEventListener {
      * </pre>
      */
     public void close() {
+        if (inputStream != null) {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        if (outputStream != null) {
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         serialPort.close();
     }
 

@@ -55,11 +55,15 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
     private JPanel panel_color;
     private JTextArea txta_console;
     private JComboBox<String> cmb_serialPort;
-    private JComboBox<String> cmb_baudRate;
-    private JComboBox<String> cmb_dataBits;
+    private JComboBox<Integer> cmb_baudRate;
+    private JComboBox<Integer> cmb_dataBits;
     private JComboBox<String> cmb_parity;
     private JComboBox<String> cmb_stopBits;
     private JComboBox<String> cmb_flowControl;
+    private JPanel panel_colorRed;
+    private JPanel panel_colorGreen;
+    private JPanel panel_colorBlue;
+
     private SerialReadAndWriteHandler sRWHandler;
 
     /**
@@ -90,16 +94,55 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
     public ShowColor() {
         setTitle("颜色识别");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 698, 493);
+        setBounds(100, 100, 700, 650);
+        setLocationRelativeTo(null);
+
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(new BorderLayout(0, 0));
 
+        JPanel panel_console = new JPanel();
+        panel_console.setBorder(new TitledBorder(null, "\u63A7\u5236\u53F0", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        panel_console.setPreferredSize(new Dimension(10, 180));
+        contentPane.add(panel_console, BorderLayout.CENTER);
+        panel_console.setLayout(new BorderLayout(0, 0));
+
+        JPanel panel_send = new JPanel();
+        FlowLayout flowLayout = (FlowLayout) panel_send.getLayout();
+        flowLayout.setAlignment(FlowLayout.LEFT);
+        panel_console.add(panel_send, BorderLayout.NORTH);
+
+        JLabel lblNewLabel = new JLabel("发送数据：");
+        panel_send.add(lblNewLabel);
+
+        txt_send = new JTextField();
+        panel_send.add(txt_send);
+        txt_send.setColumns(60);
+
+        JButton btn_send = new JButton("发送");
+        btn_send.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                send();
+            }
+        });
+        panel_send.add(btn_send);
+
+        JScrollPane scrollPane = new JScrollPane();
+        panel_console.add(scrollPane, BorderLayout.CENTER);
+
+        txta_console = new JTextArea();
+        scrollPane.setViewportView(txta_console);
+
+        JPanel panel_top = new JPanel();
+        panel_top.setPreferredSize(new Dimension(10, 270));
+        contentPane.add(panel_top, BorderLayout.NORTH);
+        panel_top.setLayout(new BorderLayout(0, 0));
+
         JPanel panel_left = new JPanel();
+        panel_top.add(panel_left, BorderLayout.WEST);
         panel_left.setBorder(new TitledBorder(null, "\u4E32\u53E3\u8BBE\u7F6E", TitledBorder.LEADING, TitledBorder.TOP, null, null));
         panel_left.setPreferredSize(new Dimension(180, 10));
-        contentPane.add(panel_left, BorderLayout.WEST);
         GridBagLayout gbl_panel_left = new GridBagLayout();
         gbl_panel_left.columnWidths = new int[] { 60, 32, 0 };
         gbl_panel_left.rowHeights = new int[] { 0, 21, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -109,6 +152,7 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
 
         JButton btn_refreshSerial = new JButton("刷新串口");
         GridBagConstraints gbc_btn_refreshSerial = new GridBagConstraints();
+        gbc_btn_refreshSerial.fill = GridBagConstraints.HORIZONTAL;
         gbc_btn_refreshSerial.insets = new Insets(0, 0, 5, 0);
         gbc_btn_refreshSerial.gridx = 1;
         gbc_btn_refreshSerial.gridy = 0;
@@ -142,8 +186,8 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
         gbc_label_1.gridy = 2;
         panel_left.add(label_1, gbc_label_1);
 
-        cmb_baudRate = new JComboBox<String>();
-        cmb_baudRate.setModel(new DefaultComboBoxModel<String>(new String[] { "9600", "19200", "38400" }));
+        cmb_baudRate = new JComboBox<Integer>();
+        cmb_baudRate.setModel(new DefaultComboBoxModel<Integer>(new Integer[] { 9600, 19200, 38400 }));
         GridBagConstraints gbc_comboBox_1 = new GridBagConstraints();
         gbc_comboBox_1.insets = new Insets(0, 0, 5, 0);
         gbc_comboBox_1.fill = GridBagConstraints.HORIZONTAL;
@@ -158,9 +202,8 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
         gbc_label_2.gridy = 3;
         panel_left.add(label_2, gbc_label_2);
 
-        cmb_dataBits = new JComboBox<String>();
-        cmb_dataBits.setModel(new DefaultComboBoxModel<String>(new String[] { "8", "7", "6", "5" }));
-        cmb_dataBits.setSelectedIndex(3);
+        cmb_dataBits = new JComboBox<Integer>();
+        cmb_dataBits.setModel(new DefaultComboBoxModel<Integer>(new Integer[] { 8, 7, 6, 5 }));
         GridBagConstraints gbc_comboBox_2 = new GridBagConstraints();
         gbc_comboBox_2.insets = new Insets(0, 0, 5, 0);
         gbc_comboBox_2.fill = GridBagConstraints.HORIZONTAL;
@@ -192,7 +235,7 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
         panel_left.add(label_4, gbc_label_4);
 
         cmb_stopBits = new JComboBox<String>();
-        cmb_stopBits.setModel(new DefaultComboBoxModel<String>(new String[] { "1", "1.5", "2" }));
+        cmb_stopBits.setModel(new DefaultComboBoxModel<String>(new String[] { "1", "2", "1.5" }));
         GridBagConstraints gbc_comboBox_4 = new GridBagConstraints();
         gbc_comboBox_4.insets = new Insets(0, 0, 5, 0);
         gbc_comboBox_4.fill = GridBagConstraints.HORIZONTAL;
@@ -215,84 +258,163 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
         gbc_comboBox_5.gridx = 1;
         gbc_comboBox_5.gridy = 6;
         panel_left.add(cmb_flowControl, gbc_comboBox_5);
-                        
-                                JButton btn_openSerial = new JButton("打开串口");
-                                GridBagConstraints gbc_btn_openSerial = new GridBagConstraints();
-                                gbc_btn_openSerial.insets = new Insets(0, 0, 5, 0);
-                                gbc_btn_openSerial.gridx = 1;
-                                gbc_btn_openSerial.gridy = 7;
-                                panel_left.add(btn_openSerial, gbc_btn_openSerial);
-                                btn_openSerial.addActionListener(new ActionListener() {
-                                    public void actionPerformed(ActionEvent e) {
-                                        openSerial();
-                                    }
-                                });
-                
-                        JButton btn_closeSerial = new JButton("关闭串口");
-                        GridBagConstraints gbc_btn_closeSerial = new GridBagConstraints();
-                        gbc_btn_closeSerial.gridx = 1;
-                        gbc_btn_closeSerial.gridy = 8;
-                        panel_left.add(btn_closeSerial, gbc_btn_closeSerial);
+
+        JButton btn_openSerial = new JButton("打开串口");
+        GridBagConstraints gbc_btn_openSerial = new GridBagConstraints();
+        gbc_btn_openSerial.fill = GridBagConstraints.HORIZONTAL;
+        gbc_btn_openSerial.insets = new Insets(0, 0, 5, 0);
+        gbc_btn_openSerial.gridx = 1;
+        gbc_btn_openSerial.gridy = 7;
+        panel_left.add(btn_openSerial, gbc_btn_openSerial);
+        btn_openSerial.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                openSerial();
+            }
+        });
+
+        JButton btn_closeSerial = new JButton("关闭串口");
+        btn_closeSerial.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                closeSerial();
+            }
+        });
+        GridBagConstraints gbc_btn_closeSerial = new GridBagConstraints();
+        gbc_btn_closeSerial.fill = GridBagConstraints.HORIZONTAL;
+        gbc_btn_closeSerial.gridx = 1;
+        gbc_btn_closeSerial.gridy = 8;
+        panel_left.add(btn_closeSerial, gbc_btn_closeSerial);
 
         JPanel panel_center = new JPanel();
-        contentPane.add(panel_center, BorderLayout.CENTER);
+        panel_center.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "\u64CD\u4F5C\u533A", TitledBorder.LEADING, TitledBorder.TOP, null,
+                null));
+        panel_top.add(panel_center, BorderLayout.CENTER);
         panel_center.setLayout(null);
 
-        JButton button = new JButton("白平衡");
-        button.setBounds(10, 10, 69, 23);
-        panel_center.add(button);
+        JButton btn_whiteBlance = new JButton("设置白平衡");
+        btn_whiteBlance.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendData("0");
+            }
+        });
+        btn_whiteBlance.setBounds(86, 97, 93, 23);
+        panel_center.add(btn_whiteBlance);
 
-        JButton button_1 = new JButton("取色");
-        button_1.setBounds(10, 65, 93, 23);
-        panel_center.add(button_1);
+        JButton btn_getColor = new JButton("取色");
+        btn_getColor.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendData("1");
+            }
+        });
+        btn_getColor.setBounds(86, 130, 93, 23);
+        panel_center.add(btn_getColor);
 
         panel_color = new JPanel();
-        panel_color.setBackground(Color.BLACK);
-        panel_color.setBounds(10, 98, 173, 119);
+        panel_color.setBorder(new TitledBorder(null, "\u989C\u8272", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        panel_color.setBackground(Color.WHITE);
+        panel_color.setBounds(189, 97, 173, 158);
         panel_center.add(panel_color);
 
-        JButton btnTest = new JButton("test");
-        btnTest.addActionListener(new ActionListener() {
+        JButton btn_closeLED = new JButton("关闭LED");
+        btn_closeLED.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                sendData("11");
             }
         });
-        btnTest.setBounds(131, 10, 93, 23);
-        panel_center.add(btnTest);
+        btn_closeLED.setBounds(12, 45, 93, 23);
+        panel_center.add(btn_closeLED);
 
-        JPanel panel_console = new JPanel();
-        panel_console.setBorder(new TitledBorder(null, "\u63A7\u5236\u53F0", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-        panel_console.setPreferredSize(new Dimension(10, 180));
-        contentPane.add(panel_console, BorderLayout.SOUTH);
-        panel_console.setLayout(new BorderLayout(0, 0));
+        panel_colorRed = new JPanel();
+        panel_colorRed.setBackground(Color.RED);
+        panel_colorRed.setBorder(new TitledBorder(null, "\u7EA2", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        panel_colorRed.setBounds(372, 97, 110, 46);
+        panel_center.add(panel_colorRed);
 
-        JPanel panel_send = new JPanel();
-        FlowLayout flowLayout = (FlowLayout) panel_send.getLayout();
-        flowLayout.setAlignment(FlowLayout.LEFT);
-        panel_console.add(panel_send, BorderLayout.NORTH);
+        panel_colorGreen = new JPanel();
+        panel_colorGreen.setBackground(Color.GREEN);
+        panel_colorGreen.setBorder(new TitledBorder(null, "\u7EFF", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        panel_colorGreen.setBounds(372, 153, 110, 46);
+        panel_center.add(panel_colorGreen);
 
-        JLabel lblNewLabel = new JLabel("发送数据：");
-        panel_send.add(lblNewLabel);
+        panel_colorBlue = new JPanel();
+        panel_colorBlue.setBackground(Color.BLUE);
+        panel_colorBlue.setBorder(new TitledBorder(null, "\u84DD", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+        panel_colorBlue.setBounds(372, 209, 110, 46);
+        panel_center.add(panel_colorBlue);
 
-        txt_send = new JTextField();
-        panel_send.add(txt_send);
-        txt_send.setColumns(60);
-
-        JButton btn_send = new JButton("发送");
-        btn_send.addActionListener(new ActionListener() {
+        JButton btn_openLED = new JButton("开启LED");
+        btn_openLED.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                send();
+                sendData("12");
             }
         });
-        panel_send.add(btn_send);
+        btn_openLED.setBounds(12, 20, 93, 23);
+        panel_center.add(btn_openLED);
 
-        JScrollPane scrollPane = new JScrollPane();
-        panel_console.add(scrollPane, BorderLayout.CENTER);
+        JButton btn_reboot = new JButton("重启");
+        btn_reboot.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
 
-        txta_console = new JTextArea();
-        scrollPane.setViewportView(txta_console);
-        
-        JPanel panel_top = new JPanel();
-        contentPane.add(panel_top, BorderLayout.NORTH);
+            }
+        });
+        btn_reboot.setBounds(389, 20, 93, 23);
+        panel_center.add(btn_reboot);
+
+        JButton btn_scaling2 = new JButton("比例2%");
+        btn_scaling2.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendData("30");
+            }
+        });
+        btn_scaling2.setBounds(187, 64, 93, 23);
+        panel_center.add(btn_scaling2);
+
+        JButton btn_scaling20 = new JButton("比例20%");
+        btn_scaling20.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendData("31");
+            }
+        });
+        btn_scaling20.setBounds(290, 64, 93, 23);
+        panel_center.add(btn_scaling20);
+
+        JButton btn_scaling100 = new JButton("比例100%");
+        btn_scaling100.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendData("32");
+            }
+        });
+        btn_scaling100.setBounds(389, 64, 93, 23);
+        panel_center.add(btn_scaling100);
+
+        JButton btn_redColor = new JButton("只取红色");
+        btn_redColor.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendData("2");
+            }
+        });
+        btn_redColor.setForeground(Color.RED);
+        btn_redColor.setBounds(86, 163, 93, 23);
+        panel_center.add(btn_redColor);
+
+        JButton btn_greenColor = new JButton("只取绿色");
+        btn_greenColor.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendData("3");
+            }
+        });
+        btn_greenColor.setForeground(Color.GREEN);
+        btn_greenColor.setBounds(86, 196, 93, 23);
+        panel_center.add(btn_greenColor);
+
+        JButton btn_blueColor = new JButton("只取蓝色");
+        btn_blueColor.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                sendData("4");
+            }
+        });
+        btn_blueColor.setForeground(Color.BLUE);
+        btn_blueColor.setBounds(86, 229, 93, 23);
+        panel_center.add(btn_blueColor);
 
     }
 
@@ -317,6 +439,18 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
     }
 
     /**
+     * 关闭串口
+     */
+    private void closeSerial() {
+        if (sRWHandler != null) {
+            sRWHandler.close();
+            sRWHandler = null;
+
+            txta_console.append("\n串口已关闭\n");
+        }
+    }
+
+    /**
      * <pre>
      *  打开串口
      *  先全部用默认参数
@@ -333,7 +467,20 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
             sRWHandler.close();
         }
         try {
-            this.sRWHandler = new SerialReadAndWriteHandler(new SerialConfig(portName), this);
+
+            SerialConfig config = new SerialConfig(portName);
+            // 波特率
+            config.setBaudRate((int) cmb_baudRate.getSelectedItem());
+            // 数据位
+            config.setDataBits((int) cmb_dataBits.getSelectedItem());
+            // 校验位
+            config.setParity(cmb_parity.getSelectedIndex());
+            // 停止位 1,2,3
+            config.setStopBits(cmb_stopBits.getSelectedIndex() + 1);
+            // 流控
+            config.setFlowControl(cmb_flowControl.getSelectedIndex());
+
+            this.sRWHandler = new SerialReadAndWriteHandler(config, this);
             txta_console.setText("打开串口：" + portName + "\n");
             // 应该发一个什么指令，让其重启
 
@@ -345,18 +492,29 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
     }
 
     /**
+     * 发送
+     */
+    private void send() {
+        String data = txt_send.getText();
+        if (sendData(data))
+            // 清空
+            txt_send.setText("");
+    }
+
+    /**
      * <pre>
      * 发送数据到串口
      * </pre>
+     * 
+     * @param data
+     *            数据
+     * @return 发送结果
      */
-    private void send() {
+    private boolean sendData(String data) {
         if (sRWHandler != null) {
             try {
-                String data = txt_send.getText();
                 sRWHandler.writeData(data.getBytes());
-
-                // 清空
-                txt_send.setText("");
+                return true;
             } catch (IOException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(this, "数据发送失败", "错误", JOptionPane.ERROR_MESSAGE);
@@ -364,6 +522,8 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
         } else {
             JOptionPane.showMessageDialog(this, "请先打开串口");
         }
+
+        return false;
     }
 
     /**
@@ -382,13 +542,15 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
             int b = Integer.parseInt(color[2].trim());
             // 设置颜色
             panel_color.setBackground(new Color(r, g, b));
+            // 分别设置红绿蓝
+            panel_colorRed.setBackground(new Color(r, 0, 0));
+            panel_colorGreen.setBackground(new Color(0, g, 0));
+            panel_colorBlue.setBackground(new Color(0, 0, b));
         }
-
     }
 
     /**
      * 将接收的数据缓冲起来<br>
-     * 
      */
     private StringBuffer dataBuffer = new StringBuffer();
 
@@ -411,5 +573,4 @@ public class ShowColor extends JFrame implements SerialDataReceiveHandler {
             }
         }
     }
-
 }
