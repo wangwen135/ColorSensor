@@ -7,31 +7,27 @@
 
     通过图形界面控制传感器，在界面上直接显示颜色，在控制台显示串口返回的各项数值
     Java Swing 做界面
-    通过 javacomm(32位) RXTXcomm(64位) 连接串口
-    PS：只实现了64位系统
+    通过 RXTXcomm 连接串口
     
     颜色传感器（TCS3200） --> Arduino --> 电脑
 
 **Arduino 代码:**  
 https://github.com/wangwen135/ColorSensor/blob/master/ColorSensor/src/main/resources/arduino/colorSensorMasterDebug.ino
   
-**颜色传感器连接图：**
-
-
+**颜色传感器连接：**
+>LED 7  
+>S0  6  
+>S1  5  
+>S2  4  
+>S3  3  
+>OUT 2  
 
 ---
 
 #### java连串口说明：  
-32位系统使用 comm.jar  
-64位系统使用 RXTXcomm.jar  
+选择对应系统的dll或so文件，文件在rxtx-2.2pre2-bins.zip中
 
-#####32位：
-复制 win32com.dll 到 JAVA_HOME/bin  
-复制 javax.comm.properties 到 JAVA_HOME/lib  
-复制 comm.jar 到 JAVA_HOME/lib/ext  
-
-#####64位：
-复制 rxtxSerial.dll 到 JAVA_HOME/bin  
+复制 rxtxSerial.dll(或librxtxSerial.so) 到 JAVA_HOME/bin  
 复制 RXTXcomm.jar 到 JAVA_HOME/lib/ext  
 
 ######打包运行则复制到jre的对应目录
