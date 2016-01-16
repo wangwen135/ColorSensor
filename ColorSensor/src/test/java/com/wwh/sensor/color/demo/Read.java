@@ -10,8 +10,6 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import javax.sql.rowset.serial.SerialException;
-
 public class Read {
 
 	public static void main(String[] args) {

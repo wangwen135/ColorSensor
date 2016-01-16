@@ -9,7 +9,7 @@ public class GetSerialPorts {
 
     public void listPortChoices() {
         CommPortIdentifier portId;
-        Enumeration en = CommPortIdentifier.getPortIdentifiers();
+        Enumeration<?> en = CommPortIdentifier.getPortIdentifiers();
         // iterate through the ports.
         while (en.hasMoreElements()) {
             portId = (CommPortIdentifier) en.nextElement();

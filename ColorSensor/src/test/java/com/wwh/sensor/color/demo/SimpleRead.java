@@ -15,143 +15,144 @@ import java.util.TooManyListenersException;
 
 public class SimpleRead implements Runnable, SerialPortEventListener {
 
-	static CommPortIdentifier portId;
+    static CommPortIdentifier portId;
 
-	static Enumeration portList;
+    static Enumeration<?> portList;
 
-	InputStream inputStream;
+    InputStream inputStream;
 
-	OutputStream outputStream;
+    OutputStream outputStream;
 
-	SerialPort serialPort;
+    SerialPort serialPort;
 
-	Thread readThread;
+    Thread readThread;
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		portList = CommPortIdentifier.getPortIdentifiers();
+        portList = CommPortIdentifier.getPortIdentifiers();
 
-		while (portList.hasMoreElements()) {
+        while (portList.hasMoreElements()) {
 
-			portId = (CommPortIdentifier) portList.nextElement();
+            portId = (CommPortIdentifier) portList.nextElement();
 
-			if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
+            if (portId.getPortType() == CommPortIdentifier.PORT_SERIAL) {
 
-				if (portId.getName().equals("COM6")) {
+                if (portId.getName().equals("COM6")) {
 
-					SimpleRead reader = new SimpleRead();
+                    @SuppressWarnings("unused")
+                    SimpleRead reader = new SimpleRead();
 
-				}
+                }
 
-			}
+            }
 
-		}
+        }
 
-	}
+    }
 
-	public SimpleRead() {
+    public SimpleRead() {
 
-		try {// 打开串口COM1
+        try {// 打开串口COM1
 
-			serialPort = (SerialPort) portId.open("SimpleReadApp ", 2000);
+            serialPort = (SerialPort) portId.open("SimpleReadApp ", 2000);
 
-		} catch (PortInUseException e) {
-		}
+        } catch (PortInUseException e) {
+        }
 
-		try {// 获得输入输出流
+        try {// 获得输入输出流
 
-			inputStream = serialPort.getInputStream();
+            inputStream = serialPort.getInputStream();
 
-			outputStream = serialPort.getOutputStream();
+            outputStream = serialPort.getOutputStream();
 
-		} catch (IOException e) {
-		}
+        } catch (IOException e) {
+        }
 
-		try {// 为串口添加监听器
+        try {// 为串口添加监听器
 
-			serialPort.addEventListener(this);
+            serialPort.addEventListener(this);
 
-		} catch (TooManyListenersException e) {
-		}
+        } catch (TooManyListenersException e) {
+        }
 
-		serialPort.notifyOnDataAvailable(true);
+        serialPort.notifyOnDataAvailable(true);
 
-		try {// 配置串口
+        try {// 配置串口
 
-			serialPort.setSerialPortParams(9600,// 波特率9600bps
+            serialPort.setSerialPortParams(9600,// 波特率9600bps
 
-					SerialPort.DATABITS_7,// 7位数据位
+                    SerialPort.DATABITS_7,// 7位数据位
 
-					SerialPort.STOPBITS_1,// 1位停止位
+                    SerialPort.STOPBITS_1,// 1位停止位
 
-					SerialPort.PARITY_EVEN);// 偶校验
+                    SerialPort.PARITY_EVEN);// 偶校验
 
-		} catch (UnsupportedCommOperationException e) {
-		}
+        } catch (UnsupportedCommOperationException e) {
+        }
 
-		//readThread = new Thread(this);// 新建一线程
+        // readThread = new Thread(this);// 新建一线程
 
-//		readThread.start();// 启动线程
+        // readThread.start();// 启动线程
 
-	}
+    }
 
-	public void run() {
+    public void run() {
 
-		try {
+        try {
 
-			Thread.sleep(1);
+            Thread.sleep(1);
 
-		} catch (InterruptedException e) {
-		}
+        } catch (InterruptedException e) {
+        }
 
-	}
+    }
 
-	public void serialEvent(SerialPortEvent event) {
+    public void serialEvent(SerialPortEvent event) {
 
-		switch (event.getEventType()) {
+        switch (event.getEventType()) {
 
-		case SerialPortEvent.BI:
+        case SerialPortEvent.BI:
 
-		case SerialPortEvent.OE:
+        case SerialPortEvent.OE:
 
-		case SerialPortEvent.FE:
+        case SerialPortEvent.FE:
 
-		case SerialPortEvent.PE:
+        case SerialPortEvent.PE:
 
-		case SerialPortEvent.CD:
+        case SerialPortEvent.CD:
 
-		case SerialPortEvent.CTS:
+        case SerialPortEvent.CTS:
 
-		case SerialPortEvent.DSR:
+        case SerialPortEvent.DSR:
 
-		case SerialPortEvent.RI:
+        case SerialPortEvent.RI:
 
-		case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
+        case SerialPortEvent.OUTPUT_BUFFER_EMPTY:
 
-			break;
+            break;
 
-		case SerialPortEvent.DATA_AVAILABLE:// 如果有数据到达
+        case SerialPortEvent.DATA_AVAILABLE:// 如果有数据到达
 
-			byte[] readBuffer = new byte[200];
+            byte[] readBuffer = new byte[200];
 
-			try {
+            try {
 
-				while (inputStream.available() > 0) {
+                while (inputStream.available() > 0) {
 
-					// 读取一个字节到readBuffer
+                    // 读取一个字节到readBuffer
 
-					int numBytes = inputStream.read(readBuffer);
+                    int numBytes = inputStream.read(readBuffer);
 
-					System.out.print(new String(readBuffer, 0, numBytes));
-				}
+                    System.out.print(new String(readBuffer, 0, numBytes));
+                }
 
-			} catch (IOException e) {
-			}
+            } catch (IOException e) {
+            }
 
-			break;
+            break;
 
-		}
+        }
 
-	}
+    }
 
 }
