@@ -1,0 +1,1 @@
+java -cp ./*;./lib/* -Djava.library.path=./dll/ com.wwh.sensor.color.ShowColor
