@@ -11,15 +11,15 @@
 [下载程序](https://github.com/wangwen135/ColorSensor/raw/master/ColorSensor/release/ColorSensor-0.1.zip)
 ---
 
-####软件截图：  
+####软件截图  
 ![image](https://github.com/wangwen135/ColorSensor/blob/master/ColorSensor/image/%E8%BD%AF%E4%BB%B6%E6%88%AA%E5%9B%BE.jpg)
 
 ---
 
-**Arduino 代码:**  
-https://github.com/wangwen135/ColorSensor/blob/master/ColorSensor/arduino/colorSensorMasterDebug.ino
+####Arduino代码  
+[colorSensorMasterDebug.ino](https://github.com/wangwen135/ColorSensor/blob/master/ColorSensor/arduino/colorSensorMasterDebug.ino)
   
-**颜色传感器连接：**
+**颜色传感器连接**  
 >LED 7  
 >S0  6  
 >S1  5  
@@ -27,20 +27,25 @@ https://github.com/wangwen135/ColorSensor/blob/master/ColorSensor/arduino/colorS
 >S3  3  
 >OUT 2  
 
+**Arduino 默认串口配置**  
+>数据位 8  
+>校验位 无  
+>停止位 1  
+
 ---
 
-#### java连串口说明：  
-选择对应系统的dll或so文件，文件在rxtx-2.2pre2-bins.zip中
+####java连串口说明：  
+选择对应系统的dll或so文件，文件在[rxtx-2.2pre2-bins.zip](https://github.com/wangwen135/ColorSensor/raw/master/ColorSensor/rxtx/rxtx-2.2pre2-bins.zip)中
 
 复制 rxtxSerial.dll(或librxtxSerial.so) 到 JAVA_HOME/bin  
 复制 RXTXcomm.jar 到 JAVA_HOME/lib/ext  
 
 ######打包运行则复制到jre的对应目录，或指定：-Djava.library.path
 ---
-**Arduino 默认串口配置**  
->数据位 8  
->校验位 无  
->停止位 1  
+
+####两个串口工具  
+ * [serial_port_utility_latest.exe](https://github.com/wangwen135/ColorSensor/raw/master/ColorSensor/SerialPortUtils/serial_port_utility_latest.exe)
+ * [vspd.exe](https://github.com/wangwen135/ColorSensor/raw/master/ColorSensor/SerialPortUtils/vspd.exe)
 
 
 
