@@ -8,7 +8,7 @@
     颜色传感器（TCS3200） --> Arduino --> 电脑
 
 
-[下载程序](https://github.com/wangwen135/ColorSensor/blob/master/ColorSensor/release/ColorSensor-0.1.zip)
+[下载程序](https://github.com/wangwen135/ColorSensor/raw/master/ColorSensor/release/ColorSensor-0.1.zip)
 ---
 
 ####软件截图：  
