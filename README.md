@@ -43,9 +43,4 @@
 ######打包运行则复制到jre的对应目录，或指定：-Djava.library.path
 ---
 
-####两个串口工具  
- * [serial_port_utility_latest.exe](https://github.com/wangwen135/ColorSensor/raw/master/ColorSensor/SerialPortUtils/serial_port_utility_latest.exe)
- * [vspd.exe](https://github.com/wangwen135/ColorSensor/raw/master/ColorSensor/SerialPortUtils/vspd.exe)
-
-
 
