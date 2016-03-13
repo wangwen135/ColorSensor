@@ -14,6 +14,9 @@
 ####软件截图  
 ![image](https://github.com/wangwen135/ColorSensor/blob/master/ColorSensor/image/%E8%BD%AF%E4%BB%B6%E6%88%AA%E5%9B%BE.jpg)
 
+####示例  
+![image](https://github.com/wangwen135/ColorSensor/blob/master/ColorSensor/image/demo.jpg)
+
 ---
 
 ####Arduino代码  
