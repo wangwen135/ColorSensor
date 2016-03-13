@@ -8,7 +8,7 @@
     颜色传感器（TCS3200） --> Arduino --> 电脑
 
 
-[下载程序](https://github.com/wangwen135/ColorSensor/raw/master/ColorSensor/release/ColorSensor-0.1.zip)
+[下载程序 ColorSensor-0.1.zip](https://github.com/wangwen135/ColorSensor/raw/master/ColorSensor/release/ColorSensor-0.1.zip)
 ---
 
 ####软件截图  
@@ -20,12 +20,13 @@
 [colorSensorMasterDebug.ino](https://github.com/wangwen135/ColorSensor/blob/master/ColorSensor/arduino/colorSensorMasterDebug.ino)
   
 **颜色传感器连接**  
->LED 7  
->S0  6  
->S1  5  
->S2  4  
->S3  3  
->OUT 2  
+>传感器&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pin  
+>LED&nbsp;&nbsp;&nbsp;&nbsp;==>&nbsp;&nbsp;&nbsp; 7  
+>S0 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==>&nbsp;&nbsp;&nbsp;&nbsp; 6  
+>S1 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==>&nbsp;&nbsp;&nbsp;&nbsp; 5  
+>S2 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==>&nbsp;&nbsp;&nbsp;&nbsp; 4  
+>S3 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;==>&nbsp;&nbsp;&nbsp;&nbsp; 3  
+>OUT&nbsp;&nbsp;&nbsp;&nbsp;==>&nbsp;&nbsp;&nbsp; 2  
 
 **Arduino 默认串口配置**  
 >数据位 8  
