@@ -160,6 +160,7 @@ public class SerialReadAndWriteHandler implements SerialPortEventListener {
 
             } catch (IOException e) {
                 e.printStackTrace();
+                this.receiveHandler.exception(e);
             }
 
             break;
